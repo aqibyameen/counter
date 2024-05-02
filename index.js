@@ -1,42 +1,53 @@
-let sec =0;
-let min=0;
-let hour=0;
-var hour_data=document.querySelector('.hour_data').innerHTML;
-var min_data=document.querySelector('.min_data').innerHTML;
-var sec_data=document.querySelector('.sec_data').innerHTML;
+ const display = document.getElementById('display');
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const resetBtn = document.getElementById('resetBtn');
 
+        let timer;
+        let seconds = 0;
+        let minutes = 0;
+        let hours = 0;
 
-
-function start(){
-
-    setInterval(()=>{
-        if (sec===60) {
-            sec=0;
-            min+=1
-        }
-        if (min==60) {
-            min=0;
-            hour+=1;
+        function formatTime() {
+            let formattedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
+            let formattedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
+            let formattedHours = hours < 10 ? `0${hours}` : `${hours}`;
+            return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
         }
 
-        sec+=1;
-        sec_data=sec;
-        min_data=min;
-        hour_data=hour;
+        function startTimer() {
+            timer = setInterval(() => {
+                seconds++;
+                if (seconds === 60) {
+                    seconds = 0;
+                    minutes++;
+                }
+                if (minutes === 60) {
+                    minutes = 0;
+                    hours++;
+                }
+                display.textContent = formatTime();
+            }, 1000);
+            startBtn.disabled = true;
+            stopBtn.disabled = false;
+        }
 
-    },[1000])
+        function stopTimer() {
+            clearInterval(timer);
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+        }
 
-}
-function stop(){
-    clearInterval();
-}
-function reset(){
-  min=0;
-  sec=0;
-  hour=0;
-  sec_data=sec;
-  min_data=min;
-  hour_data=hour;
-  
-}
+        function resetTimer() {
+            clearInterval(timer);
+            seconds = 0;
+            minutes = 0;
+            hours = 0;
+            display.textContent = formatTime();
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+        }
 
+        startBtn.addEventListener('click', startTimer);
+        stopBtn.addEventListener('click', stopTimer);
+        resetBtn.addEventListener('click', resetTimer);
